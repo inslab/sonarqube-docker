@@ -1,10 +1,19 @@
 #!/bin/bash
 
-echo '=============================='
-echo 'create database '${DB_NAME} > /opt/sonar/bin/linux-x86-64/createdb.sql
-cat /opt/sonar/bin/linux-x86-64/createdb.sql
+mysql_install_db --user mysql > /dev/null
 
-mysql -h${DB_HOST} -P${DB_PORT} -u${DB_USERNAME} -p${DB_PASSWORD} < /opt/sonar/bin/linux-x86-64/createdb.sql
+cat > /opt/sonar/bin/linux-x86-64/createdb.sql <<EOF
+CREATE DATABASE sonar;
+FLUSH PRIVILEGES;
+
+CREATE USER 'sonar' IDENTIFIED BY 'sonar';
+GRANT ALL ON sonar.* TO 'sonar'@'%' IDENTIFIED BY 'sonar';
+GRANT ALL ON sonar.* TO 'sonar'@'localhost' IDENTIFIED BY 'sonar';
+EOF
+
+mysqld --bootstrap --verbose=0 < /opt/sonar/bin/linux-x86-64/createdb.sql
+
+mysqld_safe --user=mysql &
 
 if [ ! -d "/opt/sonar/extensions/plugins" ]; then
     echo "Copying plugins..."
@@ -41,4 +50,3 @@ else
 fi
 
 /opt/sonar/bin/linux-x86-64/sonar.sh console
-
