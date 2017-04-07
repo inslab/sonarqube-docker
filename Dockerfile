@@ -16,6 +16,9 @@ RUN sed -i 's|#sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar|sonar.jdbc.url=j
 # Set context path
 RUN sed -i 's/#sonar.web.context=/sonar.web.context=\/sonarqube/g' /opt/sonar/conf/sonar.properties
 
+# Remove syslog configuration
+RUN rm /etc/mysql/conf.d/mysqld_safe_syslog.cnf
+
 RUN sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
 RUN sed -i 's/key_buffer/key_buffer_size/g' /etc/mysql/my.cnf
 
