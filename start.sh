@@ -6,14 +6,13 @@ cat > /opt/sonar/bin/linux-x86-64/createdb.sql <<EOF
 USE mysql;
 FLUSH PRIVILEGES;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-UPDATE user SET password=PASSWORD("$DB_ROOT_PASS") WHERE user='root';
+UPDATE user SET password=PASSWORD("$DB_PASS") WHERE user='root';
 
 CREATE DATABASE $DB_NAME;
-FLUSH PRIVILEGES;
-
 CREATE USER '$DB_USER' IDENTIFIED BY '$DB_PASS';
 GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASS';
-GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
+GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS';
+FLUSH PRIVILEGES;
 EOF
 
 mysqld --bootstrap --verbose=0 < /opt/sonar/bin/linux-x86-64/createdb.sql

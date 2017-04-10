@@ -12,7 +12,7 @@ RUN cd /tmp && curl -L -O https://sonarsource.bintray.com/Distribution/sonarqube
 RUN sed -i 's|#sonar.jdbc.username=sonar|sonar.jdbc.username=${env:DB_USER}|g' /opt/sonar/conf/sonar.properties
 RUN sed -i 's|#sonar.jdbc.password=sonar|sonar.jdbc.password=${env:DB_PASS}|g' /opt/sonar/conf/sonar.properties
 #RUN sed -i 's|sonar.jdbc.url=jdbc:h2|#sonar.jdbc.url=jdbc:h2|g' /opt/sonar/conf/sonar.properties
-RUN sed -i 's|#sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar|sonar.jdbc.url=jdbc:mysql://localhost:3306/${env:DB_NAME}|g' /opt/sonar/conf/sonar.properties
+RUN sed -i 's|#sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar|sonar.jdbc.url=jdbc:mysql://${env:DB_HOST}:${env:DB_PORT}/${env:DB_NAME}|g' /opt/sonar/conf/sonar.properties
 # Set context path
 RUN sed -i 's/#sonar.web.context=/sonar.web.context=\/sonarqube/g' /opt/sonar/conf/sonar.properties
 
