@@ -8,13 +8,16 @@ RUN apt-get -y install unzip curl openjdk-7-jre-headless mysql-server-5.5 mysql-
 RUN cd /tmp && curl -L -O https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-5.1.2.zip && unzip sonarqube-5.1.2.zip && mv sonarqube-5.1.2 /opt/sonar
 
 # Update SonarQube configuration
-#RUN sed -i 's|#wrapper.java.additional.7=-server|wrapper.java.additional.7=-server|g' /opt/sonar/conf/wrapper.conf
 RUN sed -i 's|#sonar.jdbc.username=sonar|sonar.jdbc.username=${env:DB_USER}|g' /opt/sonar/conf/sonar.properties
 RUN sed -i 's|#sonar.jdbc.password=sonar|sonar.jdbc.password=${env:DB_PASS}|g' /opt/sonar/conf/sonar.properties
-#RUN sed -i 's|sonar.jdbc.url=jdbc:h2|#sonar.jdbc.url=jdbc:h2|g' /opt/sonar/conf/sonar.properties
 RUN sed -i 's|#sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar|sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar|g' /opt/sonar/conf/sonar.properties
 # Set context path
 RUN sed -i 's/#sonar.web.context=/sonar.web.context=\/sonarqube/g' /opt/sonar/conf/sonar.properties
+# Set java options
+RUN sed -i 's/#sonar.web.javaOpts=-Xmx768m -XX:MaxPermSize=160m -XX:+HeapDumpOnOutOfMemoryError/sonar.web.javaOpts=-server -Xms256m -XX:+HeapDumpOnOutOfMemoryError/g' /opt/sonar/conf/sonar.properties
+RUN sed -i 's/#sonar.search.javaOpts=-Xmx1G -Xms256m -Xss256k -Djava.net.preferIPv4Stack=true/sonar.search.javaOpts=-server -Xms256m -Xss256k -Djava.net.preferIPv4Stack=true/g' /opt/sonar/conf/sonar.properties
+RUN sed -i 's/#  -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75/  -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75/g' /opt/sonar/conf/sonar.properties
+RUN sed -i 's/#  -XX:+UseCMSInitiatingOccupancyOnly -XX:+HeapDumpOnOutOfMemoryError/  -XX:+UseCMSInitiatingOccupancyOnly -XX:+HeapDumpOnOutOfMemoryError/g' /opt/sonar/conf/sonar.properties
 
 # Remove syslog configuration
 RUN rm /etc/mysql/conf.d/mysqld_safe_syslog.cnf

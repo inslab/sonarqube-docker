@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mysql_install_db --user mysql > /dev/null
-
 cat > /opt/sonar/bin/linux-x86-64/createdb.sql <<EOF
 USE mysql;
 FLUSH PRIVILEGES;
@@ -15,7 +13,10 @@ GRANT ALL ON sonar.* TO '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';
 FLUSH PRIVILEGES;
 EOF
 
-mysqld --bootstrap --verbose=0 < /opt/sonar/bin/linux-x86-64/createdb.sql
+if [ ! -d /var/lib/mysql/mysql ] || [ ! -d /var/lib/mysql/sonar ]; then
+    mysql_install_db --user mysql > /dev/null
+    mysqld --bootstrap --verbose=0 < /opt/sonar/bin/linux-x86-64/createdb.sql
+fi
 
 mysqld_safe --user=mysql &
 
