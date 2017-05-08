@@ -33,6 +33,6 @@ RUN chmod 777 /opt/sonar/bin/linux-x86-64/start.sh
 
 EXPOSE 9000 3306
 
-VOLUME ["/opt/sonar/extensions", "/opt/sonar/conf", "/var/lib/mysql"]
+VOLUME ["/opt/sonar/extensions", "/opt/sonar/conf", "/opt/sonar/logs", "/var/lib/mysql"]
 
 CMD ["/opt/sonar/bin/linux-x86-64/start.sh"]
