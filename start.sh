@@ -14,8 +14,8 @@ FLUSH PRIVILEGES;
 EOF
 
 if [ ! -d /var/lib/mysql/mysql ] || [ ! -d /var/lib/mysql/sonar ]; then
-    mysql_install_db --user mysql > /dev/null
-    mysqld --bootstrap --verbose=0 < /opt/sonar/bin/linux-x86-64/createdb.sql
+    mysql_install_db --user mysql
+    mysqld --bootstrap < /opt/sonar/bin/linux-x86-64/createdb.sql
 fi
 
 mysqld_safe --user=mysql &
