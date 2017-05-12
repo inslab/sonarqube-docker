@@ -33,7 +33,7 @@ if [ ! -f "/opt/sonar/conf/sonar.properties" ]; then
     cp -rf /tmp/sonar/conf /opt/sonar/
 fi
 
-if [ -n "$LDAP_URI" ] && [ -n "$LDAP_BASE_DN" ]
+if [ -n "$LDAP_HOST" ] && [ -n "$LDAP_PORT" ] && [ -n "$LDAP_BASE_DN" ]
 then
     echo "--> LDAP setting..."
     CONF_FILE=/opt/sonar/conf/sonar.properties
@@ -45,9 +45,9 @@ then
     echo -e "\n\n" >> $CONF_FILE
     echo "sonar.security.realm=LDAP" >> $CONF_FILE
     echo "sonar.security.savePassword=false" >> $CONF_FILE
-    echo "ldap.url=$LDAP_URI" >> $CONF_FILE
-    echo "ldap.user.baseDn=$LDAP_BASE_DN" >> $CONF_FILE
-    echo "ldap.user.request=(&(objectClass=PosixAccount)(uid={login}))" >> $CONF_FILE
+    echo "ldap.url=ldap://${LDAP_HOST}:${LDAP_PORT}" >> $CONF_FILE
+    echo "ldap.user.baseDn=${LDAP_BASE_DN}" >> $CONF_FILE
+    echo "ldap.user.request=(&(objectClass=person)(uid={login}))" >> $CONF_FILE
     echo "ldap.user.realNameAttribute=cn" >> $CONF_FILE
     echo "ldap.user.emailAttribute=mail" >> $CONF_FILE
 else
