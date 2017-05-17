@@ -25,6 +25,15 @@ RUN rm /etc/mysql/conf.d/mysqld_safe_syslog.cnf
 RUN sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mysql/my.cnf
 RUN sed -i 's/key_buffer/key_buffer_size/g' /etc/mysql/my.cnf
 
+# Setup mysql character to utf-8
+RUN sed -i "/\[client]/a default-character-set=utf8" /etc/mysql/my.cnf
+RUN sed -i "/\[mysqld]/a skip-character-set-client-handshake" /etc/mysql/my.cnf
+RUN sed -i "/\[mysqld]/a collation-server=utf8_unicode_ci" /etc/mysql/my.cnf
+RUN sed -i "/\[mysqld]/a character-set-server=utf8" /etc/mysql/my.cnf
+RUN sed -i "/\[mysqld]/a init_connect='SET NAMES utf8'" /etc/mysql/my.cnf
+RUN sed -i "/\[mysqld]/a init_connect='SET collation_connection = utf8_unicode_ci'" /etc/mysql/my.cnf
+RUN sed -i "/\[mysql]/a default-character-set=utf8" /etc/mysql/my.cnf
+
 RUN mkdir -p /tmp/sonar
 RUN cp -rf /opt/sonar/extensions /tmp/sonar/
 RUN cp -rf /opt/sonar/conf /tmp/sonar/
